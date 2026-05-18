@@ -1,0 +1,854 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Werkzeug-Portal — Makerspace (Hell, Impressum im Code)</title>
+  <meta name="description" content="Werkzeug-Portal: Spezifikationen, Sicherheit, Pflege, Tutorials, interaktive Checklisten. Impressum wird direkt im HTML-Code gepflegt.">
+
+  <style>
+    :root{
+      --bg-1: #f6f8fb;
+      --bg-2: #ffffff;
+      --card: #ffffff;
+      --muted: #6b7280;
+      --accent: #0b5fa8;
+      --glass: rgba(11,95,168,0.04);
+      --glass-2: rgba(11,95,168,0.03);
+      --radius:12px;
+      --max-width:1400px;
+      --ease: cubic-bezier(.2,.9,.3,1);
+      --text: #0b1220;
+      --shadow: 0 8px 24px rgba(12,20,30,0.06);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      background: linear-gradient(180deg,var(--bg-1) 0%, var(--bg-2) 60%);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding:28px;
+      display:flex;
+      justify-content:center;
+    }
+    .wrap{width:100%;max-width:var(--max-width);display:grid;grid-template-rows:auto 1fr;gap:20px}
+
+    header.site-header{
+      display:flex;align-items:center;justify-content:space-between;gap:16px;
+      background:linear-gradient(90deg, rgba(11,95,168,0.03), rgba(11,95,168,0.01));
+      padding:14px;border-radius:var(--radius);border:1px solid var(--glass-2);
+      box-shadow:var(--shadow);
+    }
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{
+      width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,#eaf3ff,#cfe6ff);
+      display:flex;align-items:center;justify-content:center;font-weight:800;color:#083a63;font-size:1.05rem;
+    }
+    .brand h1{margin:0;font-size:1.05rem}
+    .brand p{margin:0;font-size:.85rem;color:var(--muted)}
+    nav.top-nav{display:flex;gap:8px;align-items:center}
+    .nav-link{
+      color:var(--muted);text-decoration:none;padding:8px 12px;border-radius:10px;font-weight:600;
+      transition:all .18s var(--ease);cursor:pointer;
+    }
+    .nav-link:hover{color:var(--text);background:rgba(11,95,168,0.06);transform:translateY(-2px)}
+    .nav-link.active{color:var(--text);background:linear-gradient(90deg, rgba(11,95,168,0.12), rgba(11,95,168,0.06));border:1px solid rgba(11,95,168,0.08)}
+
+    .main{
+      display:grid;grid-template-columns:320px 1fr;gap:20px;align-items:start;
+    }
+    @media (max-width:980px){ .main{grid-template-columns:1fr} .sidebar{order:2} .content{order:1} }
+
+    .sidebar{
+      position:sticky;top:28px;padding:16px;border-radius:var(--radius);background:var(--card);border:1px solid var(--glass-2);
+      height:calc(100vh - 120px);overflow:auto;box-shadow:var(--shadow);
+    }
+    .search-box{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+    .search-box input{
+      flex:1;padding:10px;border-radius:10px;border:1px solid rgba(11,95,168,0.06);background:transparent;color:inherit;
+    }
+    .search-hint{font-size:.85rem;color:var(--muted);margin-top:6px}
+    .filter-list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+    .filter-item{padding:8px;border-radius:8px;color:var(--muted);cursor:pointer}
+    .filter-item:hover{background:rgba(11,95,168,0.04);color:var(--text)}
+
+    .content{min-height:60vh}
+    .hero{
+      padding:22px;border-radius:var(--radius);background:var(--card);
+      border:1px solid var(--glass-2);display:flex;align-items:center;justify-content:space-between;gap:18px;box-shadow:var(--shadow);
+    }
+    .hero-left{max-width:68%}
+    .hero h2{margin:0;font-size:1.6rem}
+    .hero p{margin:8px 0 0;color:var(--muted)}
+    .hero-cta{display:flex;gap:10px;align-items:center}
+    .btn{
+      padding:10px 14px;border-radius:10px;background:linear-gradient(90deg,var(--accent),#0b84d6);color:#fff;border:0;font-weight:700;cursor:pointer;
+      box-shadow:0 6px 18px rgba(11,84,140,0.12);transition:transform .18s var(--ease);
+    }
+    .btn.secondary{background:transparent;border:1px solid rgba(11,95,168,0.06);color:var(--muted)}
+    .btn:hover{transform:translateY(-3px)}
+
+    .tool-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:18px}
+    .tool-card{
+      padding:14px;border-radius:12px;background:var(--card);
+      border:1px solid var(--glass-2);transition:transform .18s var(--ease), box-shadow .18s var(--ease);
+      cursor:pointer;display:flex;flex-direction:column;gap:8px;min-height:140px;box-shadow:var(--shadow);
+    }
+    .tool-card:hover{transform:translateY(-6px);box-shadow:0 18px 40px rgba(12,20,30,0.08)}
+    .tool-title{font-weight:700}
+    .tool-meta{color:var(--muted);font-size:.92rem}
+
+    .detail{
+      margin-top:18px;padding:18px;border-radius:12px;background:var(--card);
+      border:1px solid var(--glass-2);box-shadow:var(--shadow);
+    }
+    .detail-grid{display:grid;grid-template-columns:1fr 360px;gap:18px}
+    @media (max-width:1100px){ .detail-grid{grid-template-columns:1fr} }
+    .specs{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .spec{background:linear-gradient(180deg, rgba(11,95,168,0.02), rgba(11,95,168,0.01));padding:10px;border-radius:8px;border:1px solid rgba(11,95,168,0.03)}
+    .spec strong{display:block;color:var(--text)}
+    .steps{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+    .step{display:flex;gap:12px;align-items:flex-start}
+    .step .num{width:36px;height:36px;border-radius:10px;background:rgba(11,95,168,0.06);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--text)}
+    .step .desc{color:var(--muted)}
+
+    .checklist{margin-top:12px;padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(11,95,168,0.01), rgba(11,95,168,0.005));border:1px solid rgba(11,95,168,0.02)}
+    .checklist label{display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px;cursor:pointer}
+    .checklist input[type="checkbox"]{width:18px;height:18px}
+
+    .tutorials{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:12px}
+    .tutorial{padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(11,95,168,0.01), rgba(11,95,168,0.005));border:1px solid rgba(11,95,168,0.01)}
+
+    .gallery-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:12px}
+    .gallery-item{padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(11,95,168,0.01), rgba(11,95,168,0.005));border:1px solid rgba(11,95,168,0.01)}
+
+    .impressum-note{margin-top:8px;padding:12px;border-radius:8px;background:linear-gradient(180deg, rgba(11,95,168,0.01), rgba(11,95,168,0.005));border:1px solid rgba(11,95,168,0.01)}
+    footer.site-footer{padding:12px;text-align:center;color:var(--muted);font-size:.95rem;margin-top:18px}
+
+    .reveal{opacity:0;transform:translateY(12px);transition:opacity .6s var(--ease), transform .6s var(--ease)}
+    .reveal.visible{opacity:1;transform:none}
+
+    .muted{color:var(--muted)}
+    .sr-only{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap;border:0;padding:0;margin:-1px}
+    .code-block{font-family:monospace;background:#f3f6fb;padding:12px;border-radius:8px;border:1px solid rgba(11,95,168,0.04);overflow:auto}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- HEADER -->
+    <header class="site-header" role="banner">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">WZ</div>
+        <div>
+          <h1>Werkzeug‑Portal</h1>
+          <p class="muted">Spezifikationen, Sicherheit, Pflege & Tutorials</p>
+        </div>
+      </div>
+
+      <nav class="top-nav" role="navigation" aria-label="Hauptnavigation">
+        <span class="nav-link active" data-route="/">Start</span>
+        <span class="nav-link" data-route="/tools">Werkzeuge</span>
+        <span class="nav-link" data-route="/care">Pflege & Sicherheit</span>
+        <span class="nav-link" data-route="/tutorials">Tutorials</span>
+        <span class="nav-link" data-route="/gallery">Galerie</span>
+        <span class="nav-link" data-route="/impressum">Impressum</span>
+      </nav>
+    </header>
+
+    <!-- MAIN -->
+    <main class="main" role="main">
+
+      <!-- SIDEBAR -->
+      <aside class="sidebar" aria-label="Werkzeug Navigation">
+        <div class="search-box" role="search">
+          <label for="sidebar-search" class="sr-only">Werkzeug suchen</label>
+          <input id="sidebar-search" placeholder="Suchen (z. B. Lasercutter, 'Düse reinigen')" aria-label="Werkzeug suchen" />
+        </div>
+        <div class="search-hint">Suche durchsucht Titel, Kurzbeschreibung, Spezifikationen, Einsatz, Sicherheit und Pflege.</div>
+
+        <div style="margin-top:12px">
+          <strong class="muted">Filter nach Kategorie</strong>
+          <div class="filter-list" role="list">
+            <div class="filter-item" data-filter="all">Alle Werkzeuge</div>
+            <div class="filter-item" data-filter="fabrication">Fertigung (Lasercutter, CNC)</div>
+            <div class="filter-item" data-filter="printing">3D Druck & Additive</div>
+            <div class="filter-item" data-filter="electronics">Elektronik & Löttechnik</div>
+            <div class="filter-item" data-filter="hand">Handwerkzeuge</div>
+            <div class="filter-item" data-filter="measuring">Mess- & Prüfgeräte</div>
+          </div>
+        </div>
+
+        <div style="margin-top:14px">
+          <strong class="muted">Schnellzugriff</strong>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+            <button class="btn secondary" data-action="show-favorites" type="button">Favoriten</button>
+            <button class="btn secondary" data-action="show-new" type="button">Neu hinzugefügt</button>
+            <button class="btn secondary" data-action="show-checks" type="button">Meine Checklisten</button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- CONTENT AREA -->
+      <section class="content" id="content-area">
+
+        <!-- HOME -->
+        <div id="home-hero" class="hero reveal visible">
+          <div class="hero-left">
+            <h2>Klare Informationen zu jedem Werkzeug</h2>
+            <p class="muted">Technische Daten, Einsatzgebiete, Sicherheitsregeln, Pflegehinweise, Tutorials und interaktive Wartungs‑Checklisten.</p>
+            <div style="margin-top:12px" class="hero-cta">
+              <button class="btn" data-action="goto-tools">Alle Werkzeuge ansehen</button>
+              <button class="btn secondary" data-action="goto-care">Pflege & Sicherheit</button>
+            </div>
+          </div>
+          <div style="min-width:220px;text-align:right">
+            <div style="color:var(--muted);font-size:.95rem">Hellmodus aktiviert — Impressum im Code editierbar</div>
+          </div>
+        </div>
+
+        <!-- TOOLS PAGE -->
+        <div id="tools-page" class="reveal" style="display:none">
+          <h2>Werkzeuge</h2>
+          <p class="muted">Filtere, suche und öffne Detailseiten für jedes Werkzeug.</p>
+
+          <div class="tool-grid" id="tool-grid" aria-live="polite"></div>
+
+          <div class="detail" id="tool-detail" style="display:none" tabindex="-1" aria-live="polite">
+            <div class="detail-grid">
+              <div>
+                <h3 id="detail-title">Werkzeugname</h3>
+                <p id="detail-intro" class="muted">Kurzbeschreibung</p>
+
+                <div style="margin-top:12px">
+                  <strong>Technische Spezifikationen</strong>
+                  <div class="specs" id="specs-grid" style="margin-top:8px"></div>
+                </div>
+
+                <div style="margin-top:12px">
+                  <strong>Anwendungsgebiete</strong>
+                  <p id="detail-usage" class="muted" style="margin-top:8px"></p>
+                </div>
+
+                <div style="margin-top:12px">
+                  <strong>Sicherheitshinweise</strong>
+                  <div class="steps" id="safety-steps" style="margin-top:8px"></div>
+                </div>
+
+                <div style="margin-top:12px">
+                  <strong>Pflege & Wartung</strong>
+                  <p id="detail-care" class="muted" style="margin-top:8px"></p>
+                </div>
+
+                <div style="margin-top:12px">
+                  <strong>Kurzanleitung</strong>
+                  <div class="steps" id="quick-steps" style="margin-top:8px"></div>
+                </div>
+
+                <div style="margin-top:12px">
+                  <strong>Wartungs‑Checkliste (interaktiv)</strong>
+                  <div class="checklist" id="maintenance-checklist"></div>
+                  <div style="margin-top:8px;display:flex;gap:8px">
+                    <button class="btn secondary" id="save-checklist">Checkliste speichern</button>
+                    <button class="btn secondary" id="clear-checklist">Zurücksetzen</button>
+                  </div>
+                </div>
+              </div>
+
+              <aside style="padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(11,95,168,0.01), rgba(11,95,168,0.005));border:1px solid rgba(11,95,168,0.01)">
+                <strong>Wichtige Werte</strong>
+                <div style="margin-top:8px" id="aside-values"></div>
+
+                <div style="margin-top:12px">
+                  <strong>Ähnliche Werkzeuge</strong>
+                  <div id="related-tools" style="margin-top:8px;display:flex;flex-direction:column;gap:8px"></div>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARE PAGE -->
+        <div id="care-page" class="reveal" style="display:none">
+          <h2>Pflege & Sicherheit</h2>
+          <p class="muted">Allgemeine Regeln zur Pflege, Prüfzyklen und persönliche Schutzausrüstung (PSA).</p>
+
+          <div style="margin-top:12px" class="card-list">
+            <div class="detail" style="margin-top:12px">
+              <h3>Allgemeine Pflegeprinzipien</h3>
+              <ul class="muted" style="margin-top:8px">
+                <li>Regelmäßige Sichtprüfung vor jeder Nutzung.</li>
+                <li>Reinigung nach Herstellerangaben; keine aggressive Lösungsmittel ohne Freigabe.</li>
+                <li>Schmierung beweglicher Teile nach definierten Intervallen.</li>
+                <li>Dokumentation von Wartungen und Fehlern in einem Wartungslog.</li>
+              </ul>
+            </div>
+
+            <div class="detail" style="margin-top:12px">
+              <h3>Prüfzyklen und Checklisten</h3>
+              <p class="muted" style="margin-top:8px">Empfohlene Intervalle für Sichtprüfung, Funktionsprüfung und Sicherheitschecks.</p>
+              <div class="steps" style="margin-top:8px">
+                <div class="step"><div class="num">1</div><div class="desc muted">Tägliche Sichtprüfung: Kabel, Schutzabdeckungen, Not-Aus.</div></div>
+                <div class="step"><div class="num">2</div><div class="desc muted">Wöchentliche Funktionsprüfung: Bewegungsabläufe, Lüfter, Sensoren.</div></div>
+                <div class="step"><div class="num">3</div><div class="desc muted">Monatliche Wartung: Schmierung, Filterwechsel, Kalibrierung.</div></div>
+                <div class="step"><div class="num">4</div><div class="desc muted">Jährliche Sicherheitsprüfung durch autorisiertes Personal.</div></div>
+              </div>
+            </div>
+
+            <div class="detail" style="margin-top:12px">
+              <h3>Persönliche Schutzausrüstung (PSA)</h3>
+              <ul class="muted" style="margin-top:8px">
+                <li>Schutzbrille: Immer bei spanenden oder spritzenden Arbeiten.</li>
+                <li>Gehörschutz: Bei lauten Maschinen wie Fräsen oder Kompressoren.</li>
+                <li>Handschuhe: Nur bei Handwerkzeugen; nicht an rotierenden Maschinen.</li>
+                <li>Atemschutz: Bei Staub oder Dämpfen, passend zur Gefährdungsbeurteilung.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- TUTORIALS -->
+        <div id="tutorials-page" class="reveal" style="display:none">
+          <h2>Tutorials</h2>
+          <p class="muted">Schritt-für-Schritt Anleitungen für typische Arbeitsabläufe.</p>
+
+          <div class="tutorials">
+            <div class="tutorial">
+              <h3>3D Druck: Erstes Objekt</h3>
+              <p class="muted" style="margin-top:6px">Vorbereitung, Slicing, Druckstart und Nachbearbeitung.</p>
+            </div>
+            <div class="tutorial">
+              <h3>Lasercutter: Materialauswahl & Einstellungen</h3>
+              <p class="muted" style="margin-top:6px">Leistung, Geschwindigkeit, Fokus und Sicherheitsabstände.</p>
+            </div>
+            <div class="tutorial">
+              <h3>Löten: Saubere Lötstellen</h3>
+              <p class="muted" style="margin-top:6px">Temperatur, Flussmittel, Entlöten und Absaugung.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- GALLERY -->
+        <div id="gallery-page" class="reveal" style="display:none">
+          <h2>Galerie (textbasiert)</h2>
+          <p class="muted">Beschreibungen von typischen Arbeitsplätzen und Maschinen — ohne Bilder.</p>
+
+          <div class="gallery-list">
+            <div class="gallery-item">
+              <strong>Werkbank A — Montage</strong>
+              <p class="muted">Organisierte Werkbank mit Schraubstöcken, Spannvorrichtungen und Handwerkzeugen.</p>
+            </div>
+            <div class="gallery-item">
+              <strong>Elektronik‑Bank</strong>
+              <p class="muted">ESD‑Matten, Multimeter, Lötstationen und Absaugung für feine Lötarbeiten.</p>
+            </div>
+            <div class="gallery-item">
+              <strong>Fertigungsecke</strong>
+              <p class="muted">Lasercutter und kompakte CNC‑Fräsen mit Abluft und Sicherheitsabdeckung.</p>
+            </div>
+            <div class="gallery-item">
+              <strong>3D Druck Bereich</strong>
+              <p class="muted">Mehrere FDM‑Drucker, Filamentlager und Trockenboxen für Feuchtigkeitskontrolle.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- IMPRESSUM (Anzeige liest Werte aus dem HTML/JS-Code) -->
+        <div id="impressum-page" class="reveal" style="display:none">
+          <h2>Impressum</h2>
+          <p class="muted"></p>
+
+          <div class="impressum-note">
+            <strong></strong>
+            <p class="muted" style="margin-top:6px">
+              
+            </p>
+            <p class="muted" style="margin-top:8px">
+              
+            </p>
+          </div>
+
+          <div style="margin-top:12px" id="impressum-render" class="detail">
+            <strong>Impressum (Vorschau)</strong>
+            <div id="imp-preview-content" style="margin-top:8px" class="muted"></div>
+          </div>
+
+          <div style="margin-top:12px" class="muted">
+            <strong>Hinweis</strong>
+            <p style="margin-top:6px"></p>
+          </div>
+        </div>
+
+        <footer class="site-footer">
+          <small class="muted">Werkzeug‑Portal — Informationen zu Werkzeugen, Pflege und sicheren Arbeitsweisen. Impressum wird im Code gepflegt.</small>
+        </footer>
+      </section>
+    </main>
+  </div>
+
+  <!--
+    -------------------------------------------------------------------------
+    IMPRESSUM: Bitte bearbeite die folgenden Konstanten im JavaScript-Bereich.
+    Trage die Werte zwischen den Anführungszeichen ein. Verwende die Beispiele
+    in den Anführungszeichen als Vorlage.
+
+    Beispiel:
+      const IMP_COMPANY = "\"Makerspace PWG e.V.\"";
+      const IMP_RESPONSIBLE = "\"Max Mustermann\"";
+      const IMP_ADDRESS = "\"Musterstraße 1, 12345 Musterstadt\"";
+      const IMP_EMAIL = "\"kontakt@example.org\"";
+      const IMP_PHONE = "\"+49 123 456789\"";
+      const IMP_REGISTER = "\"Amtsgericht Musterstadt, VR 12345\"";
+      const IMP_VAT = "\"DE123456789\"";
+      const IMP_ADDITIONAL = "\"Optionaler Haftungshinweis oder weitere Angaben.\"";
+
+    WICHTIG:
+    - Bitte belasse die Anführungszeichen (\"...\") genau so, damit die Vorschau
+      korrekt funktioniert.
+    - Nach dem Speichern der Datei im Editor die Seite im Browser neu laden, um
+      die Änderungen in der Vorschau zu sehen.
+    -------------------------------------------------------------------------
+  -->
+
+  <script>
+    (function(){
+      'use strict';
+
+      /* --------------------------------------------------------------------
+         IMPRESSUM: EDIT HERE (Trage deine Angaben zwischen den Anführungszeichen ein)
+         Die Werte müssen als Strings mit Anführungszeichen angegeben werden.
+         Beispiel: const IMP_COMPANY = "\"Makerspace PWG e.V.\"";
+      -------------------------------------------------------------------- */
+
+      // "Firma / Betreiber"
+      const IMP_COMPANY = "\"Peter-Wust-Gymnasium Wittlich\"";
+
+      // "Verantwortliche Person (Ansprechpartner)"
+      const IMP_RESPONSIBLE = "\"Timophej Knapp\"";
+
+      // "Anschrift" (Straße, Hausnummer, PLZ, Ort)
+      const IMP_ADDRESS = "\"Koblenzer Str. 56, 54516 Wittlich\"";
+
+      // "E-Mail"
+      const IMP_EMAIL = "\"timoknapp@icloud.com\"";
+
+      // "Telefon"
+      const IMP_PHONE = "\"+49 132324 7363723 537283765627 *Beispiel*\"";
+
+      // "Handelsregister / Vereinsregister"
+      const IMP_REGISTER = "\"\"";
+
+      // "Umsatzsteuer-ID"
+      const IMP_VAT = "\"\"";
+
+      // "Zusätzliche Angaben / Haftungshinweis"
+      const IMP_ADDITIONAL = "\"Da die Webseite keine Daten der Besucher:innen erhebt, ist keine Datenschutzerklärung angegeben. Bei weiteren Fragen richten Sie sich bitte an die verantwortliche Person (siehe -Verantwortliche Person-)\"";
+
+
+      /* --------------------------------------------------------------------
+         Ende Impressum-Konstanten. Bitte nicht weiter unten editieren.
+      -------------------------------------------------------------------- */
+
+      /* -------------------------
+         Werkzeuge (gekürzt/kompakt, bildfrei)
+         (gleiche Daten wie vorher, für Funktionalität)
+      ------------------------- */
+      const tools = [
+        { id:'lasercutter-60w', title:'CO2 Lasercutter 60W', category:'fabrication', intro:'CO2 Lasercutter, geeignet für Holz, Acryl, Leder. Schnitt- und Gravurmodus.', specs:{'Leistung':'60 W (CO2)','Arbeitsfläche':'600 x 400 mm','Max. Materialstärke (Holz)':'10 mm'}, usage:'Feinmechanik, Prototypen, Beschriftungen, Modellbau.', safety:['Schutzbrille','Lüftung aktivieren','Nur nach Einweisung'], care:'Optiken reinigen; Riemen prüfen.', quick:['Material fixieren','Fokus einstellen','Testschnitt'], related:['lasercutter-40w','cnc-compact'], checklist:['Optik prüfen','Riemen kontrollieren','Abluft prüfen'] },
+        { id:'lasercutter-40w', title:'CO2 Lasercutter 40W (Kompakt)', category:'fabrication', intro:'Kompakter CO2-Lasercutter für kleinere Formate.', specs:{'Leistung':'40 W','Arbeitsfläche':'400 x 300 mm'}, usage:'Gravuren, Kleinserien.', safety:['Lüftung aktivieren','Material prüfen'], care:'Linse säubern; Riemen prüfen.', quick:['Probeschnitt','Fokus prüfen'], related:['lasercutter-60w'], checklist:['Linse reinigen','Abluft testen'] },
+        { id:'3d-printer-prusa', title:'3D Drucker (FDM) — Prusa', category:'printing', intro:'FDM Drucker mit beheizter Bauplatte.', specs:{'Druckvolumen':'250 x 210 x 210 mm','Nozzle':'0.4 mm','Temperatur Hotend':'bis 300 °C'}, usage:'Prototypen, Gehäuse.', safety:['Heiße Düse vermeiden','Druck beaufsichtigen'], care:'Düse reinigen; Bett nivellieren.', quick:['Slicer einstellen','Bett nivellieren'], related:['3d-printer-creality','filament-storage'], checklist:['Bett nivellieren','Düse reinigen'] },
+        { id:'3d-printer-creality', title:'3D Drucker (FDM) — Creality', category:'printing', intro:'Beliebter FDM-Drucker für Einsteiger.', specs:{'Druckvolumen':'220 x 220 x 250 mm','Nozzle':'0.4 mm'}, usage:'Ersatzteile, Lehrprojekte.', safety:['Oberflächen heiß'], care:'Bett reinigen; Riemen prüfen.', quick:['Slicer prüfen','Druckbett reinigen'], related:['3d-printer-prusa'], checklist:['Bett reinigen','Riemen prüfen'] },
+        { id:'cnc-compact', title:'CNC Fräse (Kompakt)', category:'fabrication', intro:'Kompakte CNC-Fräse für Holz und Kunststoff.', specs:{'Arbeitsfläche':'600 x 400 mm','Spindelleistung':'1.5 kW'}, usage:'Fräsarbeiten, Gravuren.', safety:['Absaugung','Werkstück spannen'], care:'Führungen reinigen; Spindel prüfen.', quick:['Werkstück spannen','Nullpunkt setzen'], related:['cnc-large'], checklist:['Führungen reinigen','Absaugung prüfen'] },
+        { id:'cnc-large', title:'CNC Fräse (Groß)', category:'fabrication', intro:'Große CNC-Fräse für Platten und größere Bauteile.', specs:{'Arbeitsfläche':'1200 x 800 mm','Spindelleistung':'3.0 kW'}, usage:'Möbelteile, große Schilder.', safety:['Absaugung erforderlich','Werkstück fixieren'], care:'Führungen ölen; Kühlung prüfen.', quick:['Spannung prüfen','Sicherheitsabdeckung prüfen'], related:['cnc-compact'], checklist:['Führungen ölen','Kühlung prüfen'] },
+        { id:'solder-station', title:'Lötstationen (Mehrere Plätze)', category:'electronics', intro:'Regelbare Lötstationen mit Absaugung.', specs:{'Temperaturbereich':'150–480 °C','Leistung':'60 W'}, usage:'Elektronikmontage, Reparaturen.', safety:['Absaugung verwenden','Heiße Spitze'], care:'Spitzen verzinnen; Entlötpumpe prüfen.', quick:['Absaugung einschalten','Temperatur wählen'], related:['esd-workbench'], checklist:['Spitze verzinnen','Absaugung prüfen'] },
+        { id:'esd-workbench', title:'ESD-Arbeitsplatz', category:'electronics', intro:'Antistatischer Arbeitsplatz mit Erdung.', specs:{'Erdung':'10 MΩ empfohlen','Matten':'Leitfähige Matten'}, usage:'SMD-Arbeiten, Reparaturen.', safety:['ESD-Schutz beachten'], care:'Erdung prüfen; Matten reinigen.', quick:['Erdung prüfen','Matte reinigen'], related:['solder-station'], checklist:['Erdung prüfen','Matte reinigen'] },
+        { id:'filament-storage', title:'Filamentlager & Trocknung', category:'printing', intro:'Trockenlagerung für Filamente.', specs:{'Lagerung':'Trocken, <20% RH','Trockner':'50–70 °C empfohlen'}, usage:'Filamentpflege, Vorbereitung für Druck.', safety:['Trockner überwachen'], care:'Filament in Trockenboxen lagern.', quick:['Filament prüfen','Trockner einstellen'], related:['3d-printer-prusa'], checklist:['Feuchtigkeitsindikator prüfen'] },
+        { id:'hand-tools', title:'Handwerkzeuge (Bohrer, Sägen, Feilen)', category:'hand', intro:'Grundausstattung an Handwerkzeugen.', specs:{'Bohrmaschinen':'Akku & Netzbetrieb','Sägen':'Handsäge, Stichsäge'}, usage:'Zuschneiden, Montage.', safety:['Schutzbrille','Handschuhe wo nötig'], care:'Klingen schärfen; Griffe prüfen.', quick:['Werkzeug wählen','Schnittlinie markieren'], related:['clamps'], checklist:['Klingen schärfen','Griffe prüfen'] },
+        { id:'measuring-tools', title:'Mess- & Prüfgeräte', category:'measuring', intro:'Multimeter, Messschieber und Prüfgeräte.', specs:{'Multimeter':'Spannung, Strom, Widerstand','Messschieber':'0.01 mm Auflösung'}, usage:'Kalibrierung, Fehlersuche.', safety:['Geräte korrekt anschließen'], care:'Batterien prüfen; Kalibrierintervalle beachten.', quick:['Gerät prüfen','Messung durchführen'], related:['esd-workbench'], checklist:['Kalibrierung prüfen'] },
+        { id:'clamps', title:'Spannvorrichtungen & Schraubstöcke', category:'hand', intro:'Zwingen, Schraubstöcke und Schnellspanner.', specs:{'Typen':'Schraubstock, Zwingen','Material':'Stahl, Gusseisen'}, usage:'Fixierung bei Sägen, Fräsen.', safety:['Werkstück sicher spannen'], care:'Gleitflächen ölen; Backen reinigen.', quick:['Zwinge wählen','Werkstück fixieren'], related:['hand-tools'], checklist:['Gleitflächen ölen'] },
+        { id:'vacuum-former', title:'Vakuumformer (Thermoforming)', category:'fabrication', intro:'Vakuumformgerät für Kunststoffteile.', specs:{'Max. Plattengröße':'600 x 400 mm','Heizelemente':'regelbar'}, usage:'Gehäuse, Formteile.', safety:['Heiße Oberflächen','Dämpfe abführen'], care:'Heizelemente prüfen; Pumpe warten.', quick:['Platte zuschneiden','Erwärmen'], related:['lasercutter-60w'], checklist:['Vakuumpumpe prüfen'] },
+        { id:'band-saw', title:'Bandsäge', category:'fabrication', intro:'Bandsäge für präzise Schnitte.', specs:{'Schnittbreite':'bis 300 mm','Bandgeschwindigkeit':'variabel'}, usage:'Zuschneiden, Konturschnitte.', safety:['Schutzbrille','Sägeblattspannung prüfen'], care:'Sägeblatt wechseln; Führungen reinigen.', quick:['Schnittlinie markieren','Langsam führen'], related:['hand-tools'], checklist:['Sägeblatt prüfen'] },
+        { id:'drill-press', title:'Säulenbohrmaschine', category:'fabrication', intro:'Stationäre Bohrmaschine für präzise Bohrungen.', specs:{'Bohrbereich':'bis 25 mm','Drehzahl':'stufenlos'}, usage:'Präzisionsbohrungen.', safety:['Werkstück spannen','Schutzbrille'], care:'Spannfutter reinigen; Schmierung prüfen.', quick:['Bohrer wählen','Bohrtiefe einstellen'], related:['clamps'], checklist:['Spannfutter reinigen'] }
+      ];
+
+      /* -------------------------
+         Router & UI helpers
+      ------------------------- */
+      const routes = { '/': showHome, '/tools': showTools, '/care': showCare, '/tutorials': showTutorials, '/gallery': showGallery, '/impressum': showImpressum };
+
+      function navigate(path){ window.location.hash = path; }
+      function setActiveNav(path){
+        document.querySelectorAll('.nav-link').forEach(a => {
+          const route = a.getAttribute('data-route');
+          if(route === path) a.classList.add('active'); else a.classList.remove('active');
+        });
+      }
+
+      function route(){
+        const hash = window.location.hash.replace('#','') || '/';
+        const path = hash.split('?')[0];
+        const fn = routes[path] || showTools;
+        fn();
+      }
+
+      window.addEventListener('hashchange', route);
+      window.addEventListener('load', () => { initUI(); route(); initRevealObserver(); restoreAllChecklists(); renderImpressumFromConstants(); });
+
+      /* -------------------------
+         SEARCH (debounced)
+      ------------------------- */
+      let searchTimer = null;
+      const SEARCH_DEBOUNCE = 220;
+
+      function normalizeText(s){ return (s || '').toString().toLowerCase(); }
+
+      function toolMatchesQuery(tool, q){
+        if(!q) return true;
+        const ql = q.toLowerCase();
+        if(normalizeText(tool.title).includes(ql)) return true;
+        if(normalizeText(tool.intro).includes(ql)) return true;
+        if(tool.specs){
+          for(const k in tool.specs){
+            if(normalizeText(k).includes(ql)) return true;
+            if(normalizeText(tool.specs[k]).includes(ql)) return true;
+          }
+        }
+        if(normalizeText(tool.usage).includes(ql)) return true;
+        if(normalizeText(tool.care).includes(ql)) return true;
+        if(Array.isArray(tool.safety) && tool.safety.some(s => normalizeText(s).includes(ql))) return true;
+        if(Array.isArray(tool.quick) && tool.quick.some(s => normalizeText(s).includes(ql))) return true;
+        if(Array.isArray(tool.checklist) && tool.checklist.some(s => normalizeText(s).includes(ql))) return true;
+        if(normalizeText(tool.category).includes(ql)) return true;
+        return false;
+      }
+
+      function performSearchRaw(query){
+        if(!query || !query.trim()) return tools.slice();
+        const q = query.trim();
+        return tools.filter(t => toolMatchesQuery(t, q));
+      }
+
+      function performSearchAndShow(query){
+        const results = performSearchRaw(query);
+        renderToolGrid(results);
+        navigate('/tools');
+        if(results.length === 1){
+          setTimeout(()=> openDetail(results[0].id), 220);
+        } else {
+          const grid = document.getElementById('tool-grid');
+          if(grid) grid.scrollIntoView({behavior:'smooth', block:'start'});
+        }
+      }
+
+      function scheduleSearch(query){
+        if(searchTimer) clearTimeout(searchTimer);
+        searchTimer = setTimeout(() => {
+          performSearchAndShow(query);
+          searchTimer = null;
+        }, SEARCH_DEBOUNCE);
+      }
+
+      /* -------------------------
+         Render Tool Grid
+      ------------------------- */
+      function renderToolGrid(list){
+        const grid = document.getElementById('tool-grid');
+        grid.innerHTML = '';
+        if(!list || list.length === 0){
+          const empty = document.createElement('div');
+          empty.className = 'muted';
+          empty.textContent = 'Keine Werkzeuge gefunden.';
+          grid.appendChild(empty);
+          return;
+        }
+        list.forEach(t => {
+          const card = document.createElement('button');
+          card.className = 'tool-card';
+          card.setAttribute('data-id', t.id);
+          card.setAttribute('type','button');
+          card.innerHTML = `
+            <div style="display:flex;justify-content:space-between;align-items:start">
+              <div>
+                <div class="tool-title">${t.title}</div>
+                <div class="tool-meta">${t.intro}</div>
+              </div>
+              <div style="text-align:right;color:var(--muted);font-size:.9rem">${categoryLabel(t.category)}</div>
+            </div>
+            <div style="margin-top:auto;color:var(--muted);font-size:.9rem">Klicken für Details</div>
+          `;
+          card.addEventListener('click', () => openDetail(t.id));
+          grid.appendChild(card);
+        });
+      }
+
+      function categoryLabel(cat){
+        switch(cat){
+          case 'fabrication': return 'Fertigung';
+          case 'printing': return '3D Druck';
+          case 'electronics': return 'Elektronik';
+          case 'hand': return 'Handwerk';
+          case 'measuring': return 'Messgeräte';
+          default: return 'Allgemein';
+        }
+      }
+
+      /* -------------------------
+         Open Detail
+      ------------------------- */
+      function openDetail(id){
+        const t = tools.find(x => x.id === id);
+        if(!t) return;
+        document.getElementById('tool-detail').style.display = 'block';
+        document.getElementById('tool-detail').scrollIntoView({behavior:'smooth', block:'start'});
+        document.getElementById('detail-title').textContent = t.title;
+        document.getElementById('detail-intro').textContent = t.intro;
+
+        const specsGrid = document.getElementById('specs-grid');
+        specsGrid.innerHTML = '';
+        Object.keys(t.specs).forEach(k => {
+          const el = document.createElement('div');
+          el.className = 'spec';
+          el.innerHTML = `<strong>${k}</strong><div class="muted" style="margin-top:6px">${t.specs[k]}</div>`;
+          specsGrid.appendChild(el);
+        });
+
+        document.getElementById('detail-usage').textContent = t.usage;
+
+        const safety = document.getElementById('safety-steps');
+        safety.innerHTML = '';
+        t.safety.forEach((s, i) => {
+          const step = document.createElement('div');
+          step.className = 'step';
+          step.innerHTML = `<div class="num">${i+1}</div><div class="desc muted">${s}</div>`;
+          safety.appendChild(step);
+        });
+
+        document.getElementById('detail-care').textContent = t.care;
+
+        const quick = document.getElementById('quick-steps');
+        quick.innerHTML = '';
+        t.quick.forEach((s, i) => {
+          const step = document.createElement('div');
+          step.className = 'step';
+          step.innerHTML = `<div class="num">${i+1}</div><div class="desc muted">${s}</div>`;
+          quick.appendChild(step);
+        });
+
+        const aside = document.getElementById('aside-values');
+        aside.innerHTML = '';
+        const keys = Object.keys(t.specs).slice(0,3);
+        keys.forEach(k => {
+          const row = document.createElement('div');
+          row.style.marginBottom = '8px';
+          row.innerHTML = `<div style="font-weight:700">${k}</div><div class="muted">${t.specs[k]}</div>`;
+          aside.appendChild(row);
+        });
+
+        const related = document.getElementById('related-tools');
+        related.innerHTML = '';
+        (t.related || []).forEach(rid => {
+          const rt = tools.find(x => x.id === rid);
+          if(!rt) return;
+          const btn = document.createElement('button');
+          btn.className = 'btn secondary';
+          btn.style.padding = '8px';
+          btn.textContent = rt.title;
+          btn.addEventListener('click', () => openDetail(rt.id));
+          related.appendChild(btn);
+        });
+
+        renderChecklist(t.id, t.checklist || []);
+        document.getElementById('tool-detail').focus();
+      }
+
+      /* -------------------------
+         Checklist (localStorage)
+      ------------------------- */
+      function checklistKey(toolId){ return `checklist_${toolId}`; }
+
+      function renderChecklist(toolId, items){
+        const container = document.getElementById('maintenance-checklist');
+        container.innerHTML = '';
+        const stored = loadChecklist(toolId) || {};
+        items.forEach((text, idx) => {
+          const id = `${toolId}_item_${idx}`;
+          const label = document.createElement('label');
+          label.innerHTML = `<input type="checkbox" data-tool="${toolId}" data-idx="${idx}" id="${id}" ${stored[idx] ? 'checked' : ''} /> <span class="muted">${text}</span>`;
+          container.appendChild(label);
+        });
+        document.getElementById('save-checklist').onclick = () => saveChecklist(toolId);
+        document.getElementById('clear-checklist').onclick = () => {
+          clearChecklist(toolId);
+          renderChecklist(toolId, items);
+        };
+      }
+
+      function saveChecklist(toolId){
+        const checks = Array.from(document.querySelectorAll('#maintenance-checklist input[type="checkbox"]'));
+        const state = {};
+        checks.forEach(ch => {
+          const idx = ch.getAttribute('data-idx');
+          state[idx] = ch.checked;
+        });
+        try{ localStorage.setItem(checklistKey(toolId), JSON.stringify(state)); }catch(e){}
+        const btn = document.getElementById('save-checklist');
+        const old = btn.textContent;
+        btn.textContent = 'Gespeichert';
+        setTimeout(()=> btn.textContent = old, 1200);
+      }
+
+      function loadChecklist(toolId){
+        try{
+          const raw = localStorage.getItem(checklistKey(toolId));
+          return raw ? JSON.parse(raw) : null;
+        }catch(e){ return null; }
+      }
+
+      function clearChecklist(toolId){
+        try{ localStorage.removeItem(checklistKey(toolId)); }catch(e){}
+      }
+
+      function restoreAllChecklists(){}
+
+      /* -------------------------
+         Impressum rendering from constants
+      ------------------------- */
+      function renderImpressumFromConstants(){
+        const preview = document.getElementById('imp-preview-content');
+        // If all constants are empty (""), show placeholder
+        const allEmpty = [IMP_COMPANY, IMP_RESPONSIBLE, IMP_ADDRESS, IMP_EMAIL, IMP_PHONE, IMP_REGISTER, IMP_VAT, IMP_ADDITIONAL]
+          .every(v => v === "\"\"" || v === '' || v === undefined);
+        if(allEmpty){
+          preview.textContent = 'Noch keine Angaben im Code gefunden. Bitte öffne die HTML-Datei und trage die Werte in den IMPRESSUM-Konstanten ein (siehe Kommentarblock).';
+          return;
+        }
+        const lines = [];
+        if(IMP_COMPANY && IMP_COMPANY !== "\"\"") lines.push(stripQuotes(IMP_COMPANY));
+        if(IMP_RESPONSIBLE && IMP_RESPONSIBLE !== "\"\"") lines.push('Verantwortlich: ' + stripQuotes(IMP_RESPONSIBLE));
+        if(IMP_ADDRESS && IMP_ADDRESS !== "\"\"") lines.push(stripQuotes(IMP_ADDRESS));
+        if(IMP_EMAIL && IMP_EMAIL !== "\"\"") lines.push('E-Mail: ' + stripQuotes(IMP_EMAIL));
+        if(IMP_PHONE && IMP_PHONE !== "\"\"") lines.push('Telefon: ' + stripQuotes(IMP_PHONE));
+        if(IMP_REGISTER && IMP_REGISTER !== "\"\"") lines.push('Register: ' + stripQuotes(IMP_REGISTER));
+        if(IMP_VAT && IMP_VAT !== "\"\"") lines.push('USt-ID: ' + stripQuotes(IMP_VAT));
+        if(IMP_ADDITIONAL && IMP_ADDITIONAL !== "\"\"") lines.push('Hinweis: ' + stripQuotes(IMP_ADDITIONAL));
+        preview.innerHTML = lines.map(l => `<div>${escapeHtml(l)}</div>`).join('');
+      }
+
+      function stripQuotes(s){
+        if(!s) return '';
+        return s.replace(/^"(.*)"$/, '$1').replace(/^"(.*)"$/, '$1').replace(/^'(.+)'$/, '$1');
+      }
+
+      function escapeHtml(s){ return String(s || '').replace(/[&<>"']/g, function(m){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]; }); }
+
+      /* -------------------------
+         UI Init
+      ------------------------- */
+      function initUI(){
+        document.querySelectorAll('.nav-link').forEach(a => {
+          a.addEventListener('click', (ev) => {
+            const route = a.getAttribute('data-route');
+            navigate(route);
+          });
+        });
+
+        document.querySelectorAll('[data-action="goto-tools"]').forEach(b => b.addEventListener('click', () => navigate('/tools')));
+        document.querySelectorAll('[data-action="goto-care"]').forEach(b => b.addEventListener('click', () => navigate('/care')));
+
+        document.querySelectorAll('.filter-item').forEach(fi => {
+          fi.addEventListener('click', () => {
+            const f = fi.getAttribute('data-filter');
+            if(f === 'all') renderToolGrid(tools);
+            else renderToolGrid(tools.filter(t => t.category === f));
+            navigate('/tools');
+          });
+        });
+
+        document.querySelectorAll('[data-action="show-favorites"]').forEach(b => b.addEventListener('click', () => { renderToolGrid(tools.slice(0,3)); navigate('/tools'); }));
+        document.querySelectorAll('[data-action="show-new"]').forEach(b => b.addEventListener('click', () => { renderToolGrid(tools.slice(-3)); navigate('/tools'); }));
+        document.querySelectorAll('[data-action="show-checks"]').forEach(b => b.addEventListener('click', () => {
+          const saved = tools.filter(t => localStorage.getItem(checklistKey(t.id)));
+          renderToolGrid(saved);
+          navigate('/tools');
+        }));
+
+        // Search wiring
+        const searchInput = document.getElementById('sidebar-search');
+        searchInput.addEventListener('input', (e) => {
+          const q = e.target.value;
+          scheduleSearch(q);
+        }, {passive:true});
+        searchInput.addEventListener('keydown', (e) => {
+          if(e.key === 'Enter'){
+            e.preventDefault();
+            if(searchTimer) { clearTimeout(searchTimer); searchTimer = null; }
+            performSearchAndShow(searchInput.value);
+          }
+          if(e.key === 'Escape'){
+            searchInput.value = '';
+            performSearchAndShow('');
+          }
+        });
+
+        // "/" focuses search
+        window.addEventListener('keydown', (e) => {
+          if(e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA'){
+            e.preventDefault();
+            searchInput.focus();
+          }
+        });
+
+        renderToolGrid(tools);
+      }
+
+      /* -------------------------
+         Page functions
+      ------------------------- */
+      function showHome(){ setActiveNav('/'); document.getElementById('home-hero').classList.add('visible'); hideAllPagesExcept('home'); }
+      function showTools(){ setActiveNav('/tools'); document.getElementById('home-hero').classList.remove('visible'); hideAllPagesExcept('tools'); renderToolGrid(tools); }
+      function showCare(){ setActiveNav('/care'); document.getElementById('home-hero').classList.remove('visible'); hideAllPagesExcept('care'); }
+      function showTutorials(){ setActiveNav('/tutorials'); document.getElementById('home-hero').classList.remove('visible'); hideAllPagesExcept('tutorials'); }
+      function showGallery(){ setActiveNav('/gallery'); document.getElementById('home-hero').classList.remove('visible'); hideAllPagesExcept('gallery'); }
+      function showImpressum(){ setActiveNav('/impressum'); document.getElementById('home-hero').classList.remove('visible'); hideAllPagesExcept('impressum'); renderImpressumFromConstants(); }
+
+      function hideAllPagesExcept(page){
+        const pages = {
+          home: 'home-hero',
+          tools: 'tools-page',
+          care: 'care-page',
+          tutorials: 'tutorials-page',
+          gallery: 'gallery-page',
+          impressum: 'impressum-page'
+        };
+        Object.keys(pages).forEach(k => {
+          const el = document.getElementById(pages[k]);
+          if(!el) return;
+          el.style.display = (k === page) ? 'block' : 'none';
+        });
+      }
+
+      /* -------------------------
+         Scroll reveal
+      ------------------------- */
+      function initRevealObserver(){
+        const obs = new IntersectionObserver((entries) => {
+          entries.forEach(en => {
+            if(en.isIntersecting){
+              en.target.classList.add('visible');
+              obs.unobserve(en.target);
+            }
+          });
+        }, {threshold: 0.12});
+        document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+      }
+
+      /* Accessibility */
+      document.addEventListener('keydown', (e) => { if(e.key === 'Tab') document.body.classList.add('show-focus'); });
+
+    })();
+  </script>
+</body>
+</html>
